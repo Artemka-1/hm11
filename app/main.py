@@ -5,6 +5,14 @@ from typing import List, Optional
 from . import models, schemas, crud
 from .database import SessionLocal, engine, Base
 
+from fastapi import FastAPI
+from app.auth.router import router as auth_router
+from app.contacts.router import router as contacts_router
+
+app = FastAPI()
+
+app.include_router(auth_router)
+app.include_router(contacts_router)
 
 Base.metadata.create_all(bind=engine)
 
