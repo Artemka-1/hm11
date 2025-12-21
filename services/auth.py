@@ -26,3 +26,10 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     await send_email(new_user.email, "Verify email", link)
 
     return {"msg": "Check your email"}
+@router.get("/verify/{token}")
+def verify(token: str, db: Session = Depends(get_db)):
+    email = verify_email_token(token)
+    user = db.query(User).filter(User.email == email).first()
+    user.is_verified = True
+    db.commit()
+    return {"msg": "Email verified"}
