@@ -14,3 +14,15 @@ def create_reset_token(email: str):
 
 def verify_reset_token(token: str):
     return serializer.loads(token, salt="password-reset", max_age=3600)
+
+@router.post("/register")
+async def register(user: UserCreate, db: Session = Depends(get_db)):
+    new_user = User(email=user.email, password=hash_pwd(user.password))
+    db.add(new_user)
+    db.commit()
+
+    token = create_email_token(new_user.email)
+    link = f"http://localhost:8000/auth/verify/{token}"
+    await send_email(new_user.email, "Verify email", link)
+
+    return {"msg": "Check your email"}
