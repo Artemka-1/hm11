@@ -74,3 +74,30 @@ def delete_contact(contact_id: int, db: Session = Depends(get_db)):
 @app.get("/contacts/birthdays/", response_model=List[schemas.ContactOut])
 def birthdays(days: int = Query(7, ge=1, le=365), db: Session = Depends(get_db)):
     return crud.upcoming_birthdays(db, days=days)
+
+
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@router.post("/forgot-password")
+async def forgot(email: EmailStr):
+    token = create_reset_token(email)
+    link = f"http://localhost:8000/auth/reset/{token}"
+    await send_email(email, "Reset password", link)
+
+@router.post("/reset-password/{token}")
+def reset(token: str, password: str):
+    email = verify_reset_token(token)
+    user.password = hash_pwd(password)
