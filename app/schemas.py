@@ -26,3 +26,26 @@ class ContactOut(ContactBase):
 
     class Config:
         orm_mode = True
+
+
+from pydantic import BaseModel, EmailStr
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: EmailStr
+
+class Token(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+class ContactCreate(BaseModel):
+    name: str
+    email: EmailStr
+
+class ContactResponse(ContactCreate):
+    id: int
