@@ -11,3 +11,14 @@ class Contact(Base):
     phone = Column(String(50), nullable=False)
     birthday = Column(Date, nullable=False)
     additional = Column(Text, nullable=True)
+    
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class Contact(Base):
+    __tablename__ = "contacts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    email = Column(String)
