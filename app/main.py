@@ -2,6 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
+from fastapi import FastAPI
+from app.routes import contacts
+
 from . import models, schemas, crud
 from .database import SessionLocal, engine, Base
 
@@ -101,3 +104,9 @@ async def forgot(email: EmailStr):
 def reset(token: str, password: str):
     email = verify_reset_token(token)
     user.password = hash_pwd(password)
+from fastapi import FastAPI
+from app.routes import contacts
+
+app = FastAPI(title="HM11 REST API")
+
+app.include_router(contacts.router, prefix="/contacts", tags=["contacts"])
