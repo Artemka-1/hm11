@@ -50,4 +50,12 @@ class ContactCreate(BaseModel):
 class ContactResponse(ContactCreate):
     id: int
 
+class ContactBase(BaseModel):
+    name: str
+    email: str
 
+class ContactResponse(ContactBase):
+    id: int
+
+    class Config:
+        from_attributes = True
